@@ -1,0 +1,71 @@
+const AWS =require('aws-sdk');
+
+const addUserInfo = async(event) => {
+    try {
+
+        const dynamodb = new AWS.DynamoDB.DocumentClient();
+
+        const { email, 
+                personality_1, 
+                personality_2, 
+                personality_3,
+                race,
+                race_type,
+                disabilities,
+                disabilities_type,
+                work,
+                work_occupation,
+                work_experience,
+                study_experience,
+                motivation,
+                program_type,
+                study_area,
+                program_modality,
+                mobility,
+                study_city,
+                time_availability
+        } = JSON.parse(event.body);
+        const createdAt = new Date();
+        const id = email;
+
+        const newUserInfo = {
+            id,
+            personality_1,
+            personality_2,
+            personality_3,
+            race,
+            race_type,
+            disabilities,
+            disabilities_type,
+            work,
+            work_occupation,
+            work_experience,
+            study_experience,
+            motivation,
+            program_type,
+            study_area,
+            program_modality,
+            mobility,
+            study_city,
+            time_availability,
+            createdAt,
+        };
+
+        await dynamodb.put({
+            TableName: 'EstudiaTable',
+            Item: newUserInfo
+        }).promise();
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify(newUserInfo)
+        };
+        
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+module.exports = {
+    addUserInfo,
+};
